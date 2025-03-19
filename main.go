@@ -110,14 +110,12 @@ func printProgress(message string) {
 
 // LoadRules loads rules from the embedded YAML file
 func LoadRules() (*Rules, error) {
-	printProgress("Loading built-in rules")
 	data, err := embeddedRules.ReadFile("prompt_rules.yaml")
 	if err != nil {
 		return nil, fmt.Errorf("failed to read embedded rules file: %w", err)
 	}
 
 	var rules Rules
-	printProgress("Parsing built-in rules")
 	err = yaml.Unmarshal(data, &rules)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing embedded YAML file: %w", err)
@@ -279,7 +277,6 @@ func readFromFile(filePath string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to read file: %w", err)
 	}
-	printProgress("File read successfully")
 	return string(data), nil
 }
 
@@ -302,19 +299,19 @@ func readFromStdin() (string, error) {
 	return sb.String(), nil
 }
 
-// printUsage prints detailed usage instructions
+// printUsage prints usage information
 func printUsage() {
 	fmt.Fprintf(os.Stderr, `Usage of %s:
-  %s -file=<file>      Check prompt from the specified file
-  %s -version          Show version information
-  %s --force-color     Force colored output
-  %s --no-color        Disable colored output
-  %s                   Check prompt from stdin
+  %s -file=your-prompt.txt   Check prompt in file
+  cat prompt.txt | %s        Check prompt from stdin
+  %s -version                Show version information
 
-Examples:
-  %s -file=prompt.txt
-  cat prompt.txt | %s
-`, appName, appName, appName, appName, appName, appName, appName, appName)
+Options:
+  -file string           Path to file with prompt
+  -version               Show version information
+  --force-color          Force colored output
+  --no-color             Disable colored output
+`, appName, appName, appName, appName)
 }
 
 // checkPromptWithLLM checks the prompt using LLM API
@@ -330,7 +327,6 @@ func checkPromptWithLLM(prompt string, rules *Rules, config *LLMConfig) ([]Issue
 	}
 
 	// Format rules as text for LLM
-	printProgress("Preparing rules description for LLM")
 	var rulesDescription strings.Builder
 	rulesDescription.WriteString("List of prompt checking rules:\n\n")
 
@@ -348,7 +344,6 @@ func checkPromptWithLLM(prompt string, rules *Rules, config *LLMConfig) ([]Issue
 	}
 
 	// Prepare request to LLM API
-	printProgress("Creating system message")
 	systemMessage := `You are a prompt evaluation expert. Your task is to analyze a prompt and determine if it follows the provided rules.
 
 Analyze the prompt against each rule and identify violations. The rules are provided in a separate message.
@@ -356,7 +351,6 @@ Analyze the prompt against each rule and identify violations. The rules are prov
 Use the find_prompt_issues tool to return the issues found in the prompt. If there are no issues, return an empty array.`
 
 	// Define a tool for finding prompt issues
-	printProgress("Configuring tools for structured response")
 	tools := []map[string]interface{}{
 		{
 			"type": "function",
@@ -407,7 +401,6 @@ Use the find_prompt_issues tool to return the issues found in the prompt. If the
 		},
 	}
 
-	printProgress("Building request payload")
 	requestBody := map[string]interface{}{
 		"model": config.ModelName,
 		"messages": []map[string]string{
@@ -433,19 +426,16 @@ Use the find_prompt_issues tool to return the issues found in the prompt. If the
 		},
 	}
 
-	printProgress("Serializing request to JSON")
 	jsonData, err := json.Marshal(requestBody)
 	if err != nil {
 		return nil, fmt.Errorf("request serialization error: %w", err)
 	}
 
 	// Prepare HTTP request
-	printProgress(fmt.Sprintf("Setting up HTTP client with timeout %v", config.Timeout))
 	client := &http.Client{
 		Timeout: config.Timeout,
 	}
 
-	printProgress(fmt.Sprintf("Creating HTTP request to %s", config.APIEndpoint))
 	req, err := http.NewRequest("POST", config.APIEndpoint, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %w", err)
@@ -462,14 +452,12 @@ Use the find_prompt_issues tool to return the issues found in the prompt. If the
 	}
 	defer resp.Body.Close()
 
-	printProgress(fmt.Sprintf("Received response with status code: %d", resp.StatusCode))
 	if resp.StatusCode != http.StatusOK {
 		bodyBytes, _ := io.ReadAll(resp.Body)
 		return nil, fmt.Errorf("API returned error %d: %s", resp.StatusCode, string(bodyBytes))
 	}
 
 	// Process response
-	printProgress("Decoding API response")
 	var responseData map[string]interface{}
 	decoder := json.NewDecoder(resp.Body)
 	if err := decoder.Decode(&responseData); err != nil {
@@ -477,7 +465,6 @@ Use the find_prompt_issues tool to return the issues found in the prompt. If the
 	}
 
 	// Extract tool call results
-	printProgress("Extracting tool call results")
 	var issues []Issue
 
 	// Navigate through the response structure to extract tool calls
@@ -498,7 +485,7 @@ Use the find_prompt_issues tool to return the issues found in the prompt. If the
 
 									// Extract issues from the tool response
 									if issuesData, ok := toolResponse["issues"].([]interface{}); ok {
-										printProgress(fmt.Sprintf("Processing %d issues found by LLM", len(issuesData)))
+										printProgress(fmt.Sprintf("Found %d issues", len(issuesData)))
 										for _, issueData := range issuesData {
 											if issueMap, ok := issueData.(map[string]interface{}); ok {
 												issue := Issue{
@@ -556,7 +543,7 @@ Use the find_prompt_issues tool to return the issues found in the prompt. If the
 		}
 	}
 
-	printProgress("Validation completed successfully")
+	printProgress("Validation completed")
 	return issues, nil
 }
 
@@ -611,7 +598,6 @@ func main() {
 	forceColorFlag := flag.Bool("force-color", false, "Force colored output even when stdout is not a terminal")
 	noColorFlag := flag.Bool("no-color", false, "Disable colored output")
 
-	printProgress("Parsing command line arguments")
 	flag.Parse()
 
 	// Configure color settings based on flags
@@ -638,7 +624,6 @@ func main() {
 	}
 
 	// Check if there's data on stdin
-	printProgress("Checking input method")
 	stdinInfo, _ := os.Stdin.Stat()
 	hasStdin := (stdinInfo.Mode() & os.ModeCharDevice) == 0
 
@@ -673,12 +658,10 @@ func main() {
 	errHandler(err, "Error setting up LLM API")
 
 	// Check prompt using only LLM API
-	printProgress("Starting prompt validation process")
 	issues, err := checkPromptWithLLM(input, rules, &llmConfig)
 	errHandler(err, "Error checking prompt with LLM API")
 
 	// Format and output report
-	printProgress("Generating final report")
 	report := Report(issues, *forceColorFlag, *noColorFlag)
 	fmt.Println(report)
 

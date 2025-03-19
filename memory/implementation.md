@@ -183,17 +183,13 @@ The application generates structured and colorized reports for better readabilit
 | `NO_COLOR` | Disable colorized output | Optional, any value disables colors |
 
 ## Progress Reporting
-The application displays colorized progress messages at each stage of execution:
-- Application startup & configuration (green)
-- Rules loading and parsing
-- Prompt reading (file/stdin)
-- LLM API configuration
-- Request preparation and serialization
-- API request sending & response handling
-- Processing & validation steps (yellow)
+The application displays selective progress messages at key stages of execution:
+- Application startup & completion (green)
+- Rules loading completion
+- Reading prompt from file
+- LLM API configuration and request status
+- Found issues count
 - Error and failure messages (red)
-- Report generation
-- Completion message (green)
 
 Progress message features:
 - Color-coded by message type for better visual distinction
