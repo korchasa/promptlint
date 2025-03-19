@@ -88,11 +88,10 @@ var (
 
 // printProgress prints a progress message to stderr with color formatting
 func printProgress(message string) {
-	appNameFormatted := appName
 	messageFormatted := message
 
 	if useColorForProgress {
-		appNameFormatted = fmt.Sprintf("%s%s%s%s", colorBlue, colorBold, appName, colorReset)
+		appNameFormatted := fmt.Sprintf("%s%s%s%s", colorBlue, colorBold, appName, colorReset)
 
 		// Add color to specific message types
 		if strings.Contains(message, "Starting") || strings.Contains(message, "Finished") {
