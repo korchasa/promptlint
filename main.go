@@ -127,11 +127,6 @@ func LoadRules() (*Rules, error) {
 
 // isColorTerminal returns true if the terminal supports color output
 func isColorTerminal() bool {
-	// Check the NO_COLOR environment variable
-	if _, exists := os.LookupEnv("NO_COLOR"); exists {
-		return false
-	}
-
 	// Check if stdout is a terminal
 	fileInfo, _ := os.Stdout.Stat()
 	if (fileInfo.Mode() & os.ModeCharDevice) == 0 {

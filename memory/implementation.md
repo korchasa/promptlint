@@ -164,14 +164,12 @@ The application generates structured and colorized reports for better readabilit
 - **Color Control Options**:
   - `--force-color`: Override auto-detection and always use colors
   - `--no-color`: Disable colors regardless of terminal capabilities
-  - Environment variable `NO_COLOR`: Disable colors via environment setting
 
 - **Color Detection Logic**:
   1. If `--force-color` flag is set → enable colors
   2. If `--no-color` flag is set → disable colors
   3. Otherwise, check terminal capabilities:
      - Verify if stdout is a terminal
-     - Check `NO_COLOR` environment variable
      - Inspect `TERM` environment variable value
 
 ## Environment Variables
@@ -180,7 +178,6 @@ The application generates structured and colorized reports for better readabilit
 | `PROMPTLINT_API_KEY` | API key for LLM | Required |
 | `PROMPTLINT_API_ENDPOINT` | URL of API endpoint | Optional, default "https://api.openai.com/v1/chat/completions" |
 | `PROMPTLINT_MODEL_NAME` | LLM model name | Optional, default "o3-mini" |
-| `NO_COLOR` | Disable colorized output | Optional, any value disables colors |
 
 ## Progress Reporting
 The application displays selective progress messages at key stages of execution:

@@ -14,7 +14,6 @@ CLI utility for validating LLM prompts with exclusive use of LLM API to check co
 | `PROMPTLINT_API_KEY` | API key for LLM (required) | - |
 | `PROMPTLINT_API_ENDPOINT` | URL of API endpoint | https://api.openai.com/v1/chat/completions |
 | `PROMPTLINT_MODEL_NAME` | LLM model name | o3-mini |
-| `NO_COLOR` | Disable colorized output | - |
 
 ## Docker Usage
 
