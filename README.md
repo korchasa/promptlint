@@ -3,14 +3,14 @@
 > **Warning**
 > This is a joke. It shouldn't be taken seriously.
 
-A utility for checking and validating prompts used with language models.
+CLI utility for validating LLM prompts with exclusive use of LLM API to check compliance with best practices.
 
 ## How It Works
 
 The tool follows a simple pipeline architecture:
 
 ```
-Input → Parser → Linter → Reporter → Output
+Input → LLM API → Reporter → Output
 ```
 
 1. **Input Processing**:
@@ -18,23 +18,23 @@ Input → Parser → Linter → Reporter → Output
    - Correctly handles stdin (distinguishes between direct terminal input and redirections)
 
 2. **Prompt Checking**:
-   - Checks prompts for errors and potential issues based on rules. Rules are stored in the rules.yaml file before compilation and are included in the binary file during build.
-   - The prompt is checked using LLM. It is provided with the original prompt and a list of rules, and a write_results function is described. The LLM then calls the write_results function with the check results.
+   - Validates prompts using external LLM API based on rules defined in YAML
+   - Rules are embedded in the binary at compile time
+   - Uses structured response format with tools for reliable results
 
 3. **Reporting**:
-   - Formats all issues found during linting
-   - Outputs a clean report to stdout
+   - Formats all issues found during validation
+   - Outputs a clean, colorized report to stdout
    - Shows "No issues found!" when the prompt passes all checks
 
 ## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/promptlint.git
+# Install via Go
+go install github.com/username/promptlint@latest
 
-# Build the binary
-cd promptlint
-go build -o promptlint cmd/main.go
+# Or download a pre-built binary from Releases
+# https://github.com/username/promptlint/releases
 ```
 
 ## Usage
@@ -48,49 +48,26 @@ cat your-prompt.txt | ./promptlint
 
 # Check version
 ./promptlint -version
+
+# Force colored output
+./promptlint -file=your-prompt.txt --force-color
+
+# Disable colored output
+./promptlint -file=your-prompt.txt --no-color
 ```
 
-## Examples
+## Environment Variables
 
-```bash
-# Example 1: Checking a prompt with issues
-$ echo "This is a test prompt" | ./promptlint
-Found issues:
-Token 'is' is too short
-Token 'a' is too short
+| Variable | Description | Default |
+|------------|----------|------------|
+| `PROMPTLINT_API_KEY` | API key for LLM (required) | - |
+| `PROMPTLINT_API_ENDPOINT` | URL of API endpoint | https://api.openai.com/v1/chat/completions |
+| `PROMPTLINT_MODEL_NAME` | LLM model name | o3-mini |
+| `NO_COLOR` | Disable colorized output | - |
 
-# Example 2: Checking a prompt without issues
-$ echo "This test prompt works properly" | ./promptlint
-No issues found!
-```
+## Example Output
 
-## Project Structure
-
-The tool is built with a modular architecture:
-
-- `/cmd/main.go`: Application entry point and I/O handling
-- `/pkg/parser`: Tokenization module
-- `/pkg/linter`: Rule checking module
-- `/pkg/reporter`: Result formatting module
-
-## Functionality
-
-- Syntax and semantics analysis of prompts
-- Identification of common errors and problems in prompt formulation
-- Providing recommendations for improving the effectiveness and clarity of queries
-- Integration into CI/CD pipelines and IDEs for automatic prompt quality checking
-
-## Quick Start
-
-1. Clone the repository
-2. Build the binary:
-   ```bash
-   go build -o promptlint cmd/main.go
-   ```
-3. Run the utility:
-   ```bash
-   ./promptlint -file=your-prompt.txt
-   ```
+![PromptLint Output Example](screenshot.png)
 
 ## Docker Usage
 
@@ -101,25 +78,46 @@ You can also run PromptLint using Docker:
 docker build -t promptlint .
 
 # Run with a prompt file (mounting the current directory)
-docker run --rm -v $(pwd):/data -e PROMPTLINT_API_KEY=your_api_key -e PROMPTLINT_API_ENDPOINT=your_api_endpoint promptlint -file=/data/your-prompt.txt
+docker run --rm -v $(pwd):/data -e PROMPTLINT_API_KEY=your_api_key promptlint -file=/data/your-prompt.txt
 
 # Run with stdin
-cat your-prompt.txt | docker run --rm -i -e PROMPTLINT_API_KEY=your_api_key -e PROMPTLINT_API_ENDPOINT=your_api_endpoint promptlint
+cat your-prompt.txt | docker run --rm -i -e PROMPTLINT_API_KEY=your_api_key promptlint
 ```
 
 ### Using GitHub Container Registry
-
-You can also pull the pre-built image from GitHub Container Registry:
 
 ```bash
 # Pull the latest version
 docker pull ghcr.io/username/promptlint:latest
 
-# Run with your API keys
-docker run --rm -v $(pwd):/data -e PROMPTLINT_API_KEY=your_api_key -e PROMPTLINT_API_ENDPOINT=your_api_endpoint ghcr.io/username/promptlint:latest -file=/data/your-prompt.txt
+# Run with your API key
+docker run --rm -v $(pwd):/data -e PROMPTLINT_API_KEY=your_api_key ghcr.io/username/promptlint:latest -file=/data/your-prompt.txt
 ```
 
-## Contribution and Collaboration
+## Features
+
+- Deep validation of prompts through LLM API
+- Customizable checking rules (embedded YAML)
+- Clear error output with explanations and recommendations
+- Colorized terminal output with control options
+- Progress reporting during execution
+- Compact binary without external dependencies
+- Docker container support
+- CI/CD integration with GitHub Actions
+
+## Project Structure
+
+```
+promptlint/
+├── main.go             # Entry point, CLI interface, all application logic
+├── prompt_rules.yaml   # Rules in YAML format (embedded in binary)
+├── .env                # Environment variables for API configuration
+├── bad_example.md      # Example of a bad prompt for testing
+├── Dockerfile          # Docker container configuration
+└── .github/            # GitHub Actions workflows
+```
+
+## Contribution
 
 We welcome community contributions! If you have ideas for improvements or you've found bugs, please create an issue or submit a pull request.
 
