@@ -221,6 +221,10 @@ The `.env` file in the root directory contains the necessary environment variabl
 - Alpine-based lightweight container
 - Environment variable configuration
 - Non-root user for security
+- Multi-platform support:
+  - linux/amd64 (стандартные x86_64 системы)
+  - linux/arm64 (Apple Silicon, ARM64 серверы)
+  - linux/arm/v7 (Raspberry Pi 2/3/4, ARM-устройства)
 
 ### CI/CD with GitHub Actions
 - Automated testing and linting
