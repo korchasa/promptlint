@@ -5,27 +5,7 @@
 
 CLI utility for validating LLM prompts with exclusive use of LLM API to check compliance with best practices.
 
-## How It Works
-
-The tool follows a simple pipeline architecture:
-
-```
-Input → LLM API → Reporter → Output
-```
-
-1. **Input Processing**:
-   - Reads prompt text from a file (using the `-file` flag) or from stdin
-   - Correctly handles stdin (distinguishes between direct terminal input and redirections)
-
-2. **Prompt Checking**:
-   - Validates prompts using external LLM API based on rules defined in YAML
-   - Rules are embedded in the binary at compile time
-   - Uses structured response format with tools for reliable results
-
-3. **Reporting**:
-   - Formats all issues found during validation
-   - Outputs a clean, colorized report to stdout
-   - Shows "No issues found!" when the prompt passes all checks
+![PromptLint Output Example](screenshot.png)
 
 ## Installation
 
@@ -65,10 +45,6 @@ cat your-prompt.txt | ./promptlint
 | `PROMPTLINT_MODEL_NAME` | LLM model name | o3-mini |
 | `NO_COLOR` | Disable colorized output | - |
 
-## Example Output
-
-![PromptLint Output Example](screenshot.png)
-
 ## Docker Usage
 
 You can also run PromptLint using Docker:
@@ -105,17 +81,27 @@ docker run --rm -v $(pwd):/data -e PROMPTLINT_API_KEY=your_api_key ghcr.io/usern
 - Docker container support
 - CI/CD integration with GitHub Actions
 
-## Project Structure
+## How It Works
+
+The tool follows a simple pipeline architecture:
 
 ```
-promptlint/
-├── main.go             # Entry point, CLI interface, all application logic
-├── prompt_rules.yaml   # Rules in YAML format (embedded in binary)
-├── .env                # Environment variables for API configuration
-├── bad_example.md      # Example of a bad prompt for testing
-├── Dockerfile          # Docker container configuration
-└── .github/            # GitHub Actions workflows
+Input → LLM API → Reporter → Output
 ```
+
+1. **Input Processing**:
+   - Reads prompt text from a file (using the `-file` flag) or from stdin
+   - Correctly handles stdin (distinguishes between direct terminal input and redirections)
+
+2. **Prompt Checking**:
+   - Validates prompts using external LLM API based on rules defined in YAML
+   - Rules are embedded in the binary at compile time
+   - Uses structured response format with tools for reliable results
+
+3. **Reporting**:
+   - Formats all issues found during validation
+   - Outputs a clean, colorized report to stdout
+   - Shows "No issues found!" when the prompt passes all checks
 
 ## Contribution
 
