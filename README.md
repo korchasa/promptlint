@@ -7,35 +7,6 @@ CLI utility for validating LLM prompts with exclusive use of LLM API to check co
 
 ![PromptLint Output Example](screenshot.png)
 
-## Installation
-
-```bash
-# Install via Go
-go install github.com/username/promptlint@latest
-
-# Or download a pre-built binary from Releases
-# https://github.com/username/promptlint/releases
-```
-
-## Usage
-
-```bash
-# Check a prompt from a file
-./promptlint -file=your-prompt.txt
-
-# Check a prompt from stdin
-cat your-prompt.txt | ./promptlint
-
-# Check version
-./promptlint -version
-
-# Force colored output
-./promptlint -file=your-prompt.txt --force-color
-
-# Disable colored output
-./promptlint -file=your-prompt.txt --no-color
-```
-
 ## Environment Variables
 
 | Variable | Description | Default |
@@ -47,7 +18,7 @@ cat your-prompt.txt | ./promptlint
 
 ## Docker Usage
 
-You can also run PromptLint using Docker:
+You can run PromptLint using Docker:
 
 ```bash
 # Build the Docker image
