@@ -35,10 +35,10 @@ cat your-prompt.txt | docker run --rm -i -e PROMPTLINT_API_KEY=your_api_key prom
 
 ```bash
 # Pull the latest version
-docker pull ghcr.io/username/promptlint:latest
+docker pull ghcr.io/korchasa/promptlint:latest
 
 # Run with your API key
-docker run --rm -v $(pwd):/data -e PROMPTLINT_API_KEY=your_api_key ghcr.io/username/promptlint:latest -file=/data/your-prompt.txt
+docker run --rm -v $(pwd):/data -e PROMPTLINT_API_KEY=your_api_key ghcr.io/korchasa/promptlint:latest -file=/data/your-prompt.txt
 ```
 
 ## Features
