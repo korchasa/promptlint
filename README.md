@@ -80,10 +80,3 @@ We welcome community contributions! If you have ideas for improvements or you've
 ## License
 
 [MIT](./LICENSE)
-
-## Implementation Language
-
-I recommend using the Go language. Go allows you to compile the program into a single statically linked binary file, which can be distributed without requiring users to install additional dependencies. In addition, the built-in cross-compilation capabilities make it an excellent choice for CI/CD, simplifying the automation of building, testing, and deployment.
-
-
-
