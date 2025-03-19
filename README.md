@@ -80,7 +80,7 @@ We welcome community contributions! If you have ideas for improvements or you've
 
 ## License
 
-[MIT](LICENSE)
+[MIT](./LICENSE)
 
 ## Implementation Language
 
