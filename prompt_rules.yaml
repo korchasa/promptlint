@@ -105,13 +105,6 @@ prompt_rules:
     badExample: "Explain quantum computing."
     goodExample: "You are a quantum physics professor teaching first-year university students. Explain quantum computing in simple terms."
 
-  - name: "Be Mindful of Bias"
-    rule: "Consider how prompt wording might unintentionally introduce or amplify bias."
-    reason: "Subtle phrasing can impact model output in ways that reflect societal biases."
-    fix: "Review and rephrase prompts to minimize bias."
-    badExample: "Does this person deserve a promotion?"
-    goodExample: "Based solely on this person's documented performance metrics, what can we objectively conclude about their eligibility for a promotion?"
-
   - name: "Include Edge Cases"
     rule: "Specify how to handle edge cases and exceptions."
     reason: "Clearer handling of edge cases leads to more robust and reliable outputs."
@@ -147,9 +140,4 @@ prompt_rules:
     badExample: "Explain quantum computing."
     goodExample: "Explain quantum computing to a high school student who has basic knowledge of physics."
 
-  - name: "Single Task Focus"
-    rule: "Focus on one specific task per prompt rather than multiple unrelated tasks."
-    reason: "Single-task prompts result in more focused and effective responses."
-    fix: "Break complex prompts into separate, focused queries."
-    badExample: "Write a poem, solve this math problem, and explain quantum physics."
-    goodExample: "Write a poem about space exploration. (After completion, follow up with separate prompts for other tasks.)"
+
